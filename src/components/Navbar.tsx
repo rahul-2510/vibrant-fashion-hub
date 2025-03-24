@@ -1,24 +1,26 @@
 
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingBag, Heart, ChevronDown, User } from 'lucide-react';
 import { ButtonWithIcon } from './ui/button-with-icon';
 import { cn } from '@/lib/utils';
 
 const categories = [
-  { name: "Makeup", link: "#makeup" },
-  { name: "Skincare", link: "#skincare" },
-  { name: "Hair", link: "#hair" },
-  { name: "Fragrance", link: "#fragrance" },
-  { name: "Tools", link: "#tools" },
-  { name: "Men", link: "#men" },
-  { name: "Luxury", link: "#luxury" },
-  { name: "Sale", link: "#sale", highlight: true }
+  { name: "Makeup", link: "/products?category=makeup" },
+  { name: "Skincare", link: "/products?category=skincare" },
+  { name: "Hair", link: "/products?category=hair" },
+  { name: "Fragrance", link: "/products?category=fragrance" },
+  { name: "Tools", link: "/products?category=tools" },
+  { name: "Men", link: "/products?category=men" },
+  { name: "Luxury", link: "/products?category=luxury" },
+  { name: "Sale", link: "/products?category=sale", highlight: true }
 ];
 
 export function Navbar() {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +30,14 @@ export function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+    }
+  };
 
   return (
     <header className={cn(
@@ -52,8 +62,8 @@ export function Navbar() {
                 <div className="py-2 px-4">
                   <Link to="/login" className="block py-2 text-sm hover:text-fashion-sage transition-colors">Sign In</Link>
                   <Link to="/register" className="block py-2 text-sm hover:text-fashion-sage transition-colors">Register</Link>
-                  <Link to="/account" className="block py-2 text-sm hover:text-fashion-sage transition-colors">My Account</Link>
-                  <Link to="/orders" className="block py-2 text-sm hover:text-fashion-sage transition-colors">Orders</Link>
+                  <Link to="/dashboard" className="block py-2 text-sm hover:text-fashion-sage transition-colors">Dashboard</Link>
+                  <Link to="/dashboard?tab=orders" className="block py-2 text-sm hover:text-fashion-sage transition-colors">Orders</Link>
                 </div>
               </div>
             </div>
@@ -102,14 +112,18 @@ export function Navbar() {
           </ul>
           
           <div className="relative group">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <Search size={16} className="text-muted-foreground" />
-            </div>
-            <input 
-              type="search" 
-              placeholder="Search products..." 
-              className="w-64 h-9 pl-10 pr-4 rounded-full bg-muted/50 border border-transparent focus:border-fashion-sage focus:outline-none focus:ring-0 text-sm transition-all" 
-            />
+            <form onSubmit={handleSearch}>
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <Search size={16} className="text-muted-foreground" />
+              </div>
+              <input 
+                type="search" 
+                placeholder="Search products..." 
+                className="w-64 h-9 pl-10 pr-4 rounded-full bg-muted/50 border border-transparent focus:border-fashion-sage focus:outline-none focus:ring-0 text-sm transition-all" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </form>
           </div>
         </nav>
       </div>
@@ -129,16 +143,20 @@ export function Navbar() {
         </div>
         
         <div className="p-4">
-          <div className="relative mb-6">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <Search size={16} className="text-muted-foreground" />
+          <form onSubmit={handleSearch} className="mb-6">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <Search size={16} className="text-muted-foreground" />
+              </div>
+              <input 
+                type="search" 
+                placeholder="Search products..." 
+                className="w-full h-10 pl-10 pr-4 rounded-md bg-muted/50 border border-transparent focus:border-fashion-sage focus:outline-none text-sm" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
-            <input 
-              type="search" 
-              placeholder="Search products..." 
-              className="w-full h-10 pl-10 pr-4 rounded-md bg-muted/50 border border-transparent focus:border-fashion-sage focus:outline-none text-sm" 
-            />
-          </div>
+          </form>
           
           <div className="space-y-6">
             <div>
@@ -169,6 +187,14 @@ export function Navbar() {
                 </li>
                 <li>
                   <Link to="/register" className="block py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>Register</Link>
+                </li>
+                <li>
+                  <Link to="/dashboard" className="block py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>
+                    <div className="flex items-center">
+                      <User size={16} className="mr-2" />
+                      <span>Dashboard</span>
+                    </div>
+                  </Link>
                 </li>
                 <li>
                   <Link to="/wishlist" className="block py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>
