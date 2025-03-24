@@ -23,7 +23,7 @@ const SearchResults = () => {
       const results = mockedProducts.filter(product => 
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+        (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()))
       );
       setProducts(results);
       setIsLoading(false);
