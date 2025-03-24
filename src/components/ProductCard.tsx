@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Heart, ShoppingBag, Star } from "lucide-react";
 import { ButtonWithIcon } from "./ui/button-with-icon";
@@ -15,6 +14,7 @@ export interface Product {
   isBestseller?: boolean;
   isNew?: boolean;
   isSale?: boolean;
+  description?: string;
 }
 
 interface ProductCardProps {
@@ -118,3 +118,4 @@ export function ProductCard({ product }: ProductCardProps) {
     </div>
   );
 }
+
